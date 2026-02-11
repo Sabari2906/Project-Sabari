@@ -1,0 +1,145 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 3,
+  "summary": "Web-based Clinical Training and Online Assessment Platform for a medical aesthetics device company, delivering admin-approved training content (from uploaded PDFs/materials), MCQ-only online assessments with automatic objective scoring, certification generation, and full user action auditing; built with React/Tailwind, FastAPI, PostgreSQL, and role-based authentication for therapists, doctors, and clinical trainers/admins.",
+  "architectural_notes": [
+    "Safety constraint: no AI-generated medical advice; training content must come only from admin-uploaded PDFs/materials.",
+    "Assessment constraint: auto-evaluation must be objective and limited to MCQs only; no manual test correction workflow.",
+    "Governance constraint: all training/assessment content must be admin-approved before going live.",
+    "Compliance requirement: system must log user actions (audit trail).",
+    "Tech stack fixed: React + Tailwind CSS (frontend), Python FastAPI (backend), PostgreSQL (database), role-based login/auth."
+  ],
+  "known_issues": [],
+  "isFixRequest": false,
+  "imageRequirements": "## Required Images\n- Minimal clinical brand logo mark, neutral/green palette (app-logo.dim_512x512.png)\n- Printable certificate background with subtle geometric medical aesthetic, light neutral tones, ample whitespace (certificate-bg.dim_2480x3508.png)",
+  "existing_features": [
+    {
+      "id": "feature-implement-role-based-authentication-using-internet-identity-with-three-roles-therapist-doctor-and-clinical-trainer-admin-enforce-authorization-checks-for-all-protected-actions-admin-only-content-exam-management-learner-only-exam-attempts-both-learner-roles-can-consume-published-training",
+      "title": "Implement role-based authentication using Internet Identity, with three roles: Therapist, Doctor, and Clinical Trainer (Admin). Enforce authorization checks for all protected actions (admin-only content/exam management; learner-only exam attempts; both learner roles can consume published training).",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-build-an-admin-content-management-workflow-for-training-materials-where-all-learner-visible-content-is-admin-approved-before-going-live-support-uploading-pdfs-and-organizing-them-into-courses-and-modules-with-statuses-draft-in-review-published-archived",
+      "title": "Build an admin content management workflow for training materials where all learner-visible content is admin-approved before going live. Support uploading PDFs and organizing them into courses and modules, with statuses (Draft, In Review, Published, Archived).",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-learner-facing-training-delivery-ui-course-catalog-course-detail-with-module-list-pdf-viewer-for-module-content-and-progress-tracking-per-user-e-g-not-started-in-progress-completed",
+      "title": "Create learner-facing training delivery UI: course catalog, course detail with module list, PDF viewer for module content, and progress tracking per user (e.g., Not Started/In Progress/Completed).",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-an-mcq-only-assessment-engine-with-fully-objective-auto-evaluation-no-free-text-no-manual-grading-admins-can-create-exams-with-questions-and-answer-options-set-passing-thresholds-and-publish-exams-only-after-approval-publish-step",
+      "title": "Implement an MCQ-only assessment engine with fully objective auto-evaluation (no free text, no manual grading). Admins can create exams with questions and answer options, set passing thresholds, and publish exams only after approval/publish step.",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-certification-issuance-based-on-assessment-outcomes-when-a-learner-meets-the-configured-passing-criteria-generate-a-verifiable-certificate-record-and-provide-a-downloadable-printable-certificate-view-that-includes-learner-name-identifier-course-exam-name-issue-date-and-a-unique-certificate-id",
+      "title": "Add certification issuance based on assessment outcomes. When a learner meets the configured passing criteria, generate a verifiable certificate record and provide a downloadable/printable certificate view that includes learner name/identifier, course/exam name, issue date, and a unique certificate ID.",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-comprehensive-audit-logging-for-compliance-and-safety-log-user-actions-including-authentication-events-content-access-course-module-opens-exam-lifecycle-start-submit-score-certificate-issuance-and-all-admin-changes-create-edit-approve-publish-archive-provide-an-admin-only-audit-log-viewer-with-filtering",
+      "title": "Implement comprehensive audit logging for compliance and safety. Log user actions including authentication events, content access (course/module opens), exam lifecycle (start/submit/score), certificate issuance, and all admin changes (create/edit/approve/publish/archive). Provide an admin-only audit log viewer with filtering.",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-safety-compliance-guardrails-in-the-product-ux-clearly-state-that-the-platform-provides-training-materials-only-no-medical-advice-ensure-all-learner-facing-content-is-sourced-only-from-admin-uploaded-materials-and-prevent-any-feature-that-could-generate-medical-recommendations-or-ai-authored-content",
+      "title": "Add safety/compliance guardrails in the product UX: clearly state that the platform provides training materials only (no medical advice), ensure all learner-facing content is sourced only from admin-uploaded materials, and prevent any feature that could generate medical recommendations or AI-authored content.",
+      "reqIds": [
+        "REQ-7"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-define-and-implement-a-deployment-ready-internet-computer-project-structure-within-the-provided-react-motoko-template-clear-module-boundaries-for-auth-roles-content-management-exams-attempts-certificates-and-audit-logs-plus-typed-frontend-api-bindings-and-react-query-integration-for-all-data-fetching-mutations",
+      "title": "Define and implement a deployment-ready Internet Computer project structure within the provided React + Motoko template: clear module boundaries for auth/roles, content management, exams/attempts, certificates, and audit logs; plus typed frontend API bindings and React Query integration for all data fetching/mutations.",
+      "reqIds": [
+        "REQ-8"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-coherent-professional-visual-theme-for-a-medical-training-platform-and-apply-it-consistently-across-the-app-typography-spacing-component-styling-and-layout-avoid-blue-purple-as-primary-brand-colors",
+      "title": "Create a coherent, professional visual theme for a medical training platform and apply it consistently across the app (typography, spacing, component styling, and layout). Avoid blue/purple as primary brand colors.",
+      "reqIds": [
+        "REQ-9"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-render-generated-static-images-logo-and-certificate-background-from-frontend-public-assets-generated-and-use-them-in-the-ui-app-header-login-and-certificate-view",
+      "title": "Render generated static images (logo and certificate background) from frontend/public/assets/generated and use them in the UI (app header/login and certificate view).",
+      "reqIds": [
+        "REQ-10"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Role-based authentication and authorization for therapists, doctors, and clinical trainer/admin users",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Admin content management: upload training PDFs/materials, organize into courses/modules, and require admin approval before publishing live",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Digital training delivery UI for learners (course catalog, module viewing, progress tracking)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "MCQ-only assessment engine with automatic objective evaluation and score generation (no manual correction)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-5",
+      "summary": "Certification generation and issuance based on assessment completion/score thresholds",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-6",
+      "summary": "Comprehensive audit logging of user actions (content access, attempts, grading, admin changes) for compliance/safety",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-7",
+      "summary": "Deployment-ready project structure including system architecture, folder structure, PostgreSQL schema, and API flow for React + FastAPI stack",
+      "reqIds": [],
+      "status": "pending"
+    }
+  ],
+  "gameProjectType": "none",
+  "projectName": "Clinical Training & MCQ Assessment Platform (Admin-approved content, scoring, certificates, audit logs)",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}
