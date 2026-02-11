@@ -1,0 +1,227 @@
+{
+  "kind": "feature_evidence_report",
+  "features": [
+    {
+      "featureId": "feature-implement-role-based-authentication-using-internet-identity-with-three-roles-therapist-doctor-and-clinical-trainer-admin-enforce-authorization-checks-for-all-protected-actions-admin-only-content-exam-management-learner-only-exam-attempts-both-learner-roles-can-consume-published-training",
+      "featureTitle": "Implement role-based authentication using Internet Identity, with three roles: Therapist, Doctor, and Clinical Trainer (Admin). Enforce authorization checks for all protected actions (admin-only content/exam management; learner-only exam attempts; both learner roles can consume published training).",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/features/admin/pages/AdminRoleManagementPage.tsx",
+        "frontend/src/features/auth/components/LoginPanel.tsx",
+        "frontend/src/features/auth/components/ProfileSetupModal.tsx",
+        "frontend/src/features/auth/components/RequireAdmin.tsx",
+        "frontend/src/features/auth/components/RequireAuth.tsx",
+        "frontend/src/features/auth/hooks/useCurrentUser.ts",
+        "frontend/src/hooks/useActor.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-1"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-build-an-admin-content-management-workflow-for-training-materials-where-all-learner-visible-content-is-admin-approved-before-going-live-support-uploading-pdfs-and-organizing-them-into-courses-and-modules-with-statuses-draft-in-review-published-archived",
+      "featureTitle": "Build an admin content management workflow for training materials where all learner-visible content is admin-approved before going live. Support uploading PDFs and organizing them into courses and modules, with statuses (Draft, In Review, Published, Archived).",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/features/admin/components/PdfUploadField.tsx",
+        "frontend/src/features/admin/pages/AdminCourseDetailPage.tsx",
+        "frontend/src/features/admin/pages/AdminCoursesPage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-2"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-create-learner-facing-training-delivery-ui-course-catalog-course-detail-with-module-list-pdf-viewer-for-module-content-and-progress-tracking-per-user-e-g-not-started-in-progress-completed",
+      "featureTitle": "Create learner-facing training delivery UI: course catalog, course detail with module list, PDF viewer for module content, and progress tracking per user (e.g., Not Started/In Progress/Completed).",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/features/learner/pages/CourseCatalogPage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-3"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-implement-an-mcq-only-assessment-engine-with-fully-objective-auto-evaluation-no-free-text-no-manual-grading-admins-can-create-exams-with-questions-and-answer-options-set-passing-thresholds-and-publish-exams-only-after-approval-publish-step",
+      "featureTitle": "Implement an MCQ-only assessment engine with fully objective auto-evaluation (no free text, no manual grading). Admins can create exams with questions and answer options, set passing thresholds, and publish exams only after approval/publish step.",
+      "files": [
+        "frontend/src/App.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-4"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-certification-issuance-based-on-assessment-outcomes-when-a-learner-meets-the-configured-passing-criteria-generate-a-verifiable-certificate-record-and-provide-a-downloadable-printable-certificate-view-that-includes-learner-name-identifier-course-exam-name-issue-date-and-a-unique-certificate-id",
+      "featureTitle": "Add certification issuance based on assessment outcomes. When a learner meets the configured passing criteria, generate a verifiable certificate record and provide a downloadable/printable certificate view that includes learner name/identifier, course/exam name, issue date, and a unique certificate ID.",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/features/admin/pages/AdminCertificatesPage.tsx",
+        "frontend/src/features/learner/pages/CertificateDetailPage.tsx",
+        "frontend/src/features/learner/pages/MyCertificatesPage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-5"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-implement-comprehensive-audit-logging-for-compliance-and-safety-log-user-actions-including-authentication-events-content-access-course-module-opens-exam-lifecycle-start-submit-score-certificate-issuance-and-all-admin-changes-create-edit-approve-publish-archive-provide-an-admin-only-audit-log-viewer-with-filtering",
+      "featureTitle": "Implement comprehensive audit logging for compliance and safety. Log user actions including authentication events, content access (course/module opens), exam lifecycle (start/submit/score), certificate issuance, and all admin changes (create/edit/approve/publish/archive). Provide an admin-only audit log viewer with filtering.",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/features/admin/pages/AdminAuditLogsPage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-6"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-safety-compliance-guardrails-in-the-product-ux-clearly-state-that-the-platform-provides-training-materials-only-no-medical-advice-ensure-all-learner-facing-content-is-sourced-only-from-admin-uploaded-materials-and-prevent-any-feature-that-could-generate-medical-recommendations-or-ai-authored-content",
+      "featureTitle": "Add safety/compliance guardrails in the product UX: clearly state that the platform provides training materials only (no medical advice), ensure all learner-facing content is sourced only from admin-uploaded materials, and prevent any feature that could generate medical recommendations or AI-authored content.",
+      "files": [
+        "frontend/src/features/compliance/components/TrainingDisclaimer.tsx",
+        "frontend/src/features/learner/pages/CourseCatalogPage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-7"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-define-and-implement-a-deployment-ready-internet-computer-project-structure-within-the-provided-react-motoko-template-clear-module-boundaries-for-auth-roles-content-management-exams-attempts-certificates-and-audit-logs-plus-typed-frontend-api-bindings-and-react-query-integration-for-all-data-fetching-mutations",
+      "featureTitle": "Define and implement a deployment-ready Internet Computer project structure within the provided React + Motoko template: clear module boundaries for auth/roles, content management, exams/attempts, certificates, and audit logs; plus typed frontend API bindings and React Query integration for all data fetching/mutations.",
+      "files": [
+        "frontend/ARCHITECTURE.md"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-8"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-create-a-coherent-professional-visual-theme-for-a-medical-training-platform-and-apply-it-consistently-across-the-app-typography-spacing-component-styling-and-layout-avoid-blue-purple-as-primary-brand-colors",
+      "featureTitle": "Create a coherent, professional visual theme for a medical training platform and apply it consistently across the app (typography, spacing, component styling, and layout). Avoid blue/purple as primary brand colors.",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/components/StatusBadge.tsx",
+        "frontend/src/components/layout/AppLayout.tsx",
+        "frontend/src/index.css"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-9"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-render-generated-static-images-logo-and-certificate-background-from-frontend-public-assets-generated-and-use-them-in-the-ui-app-header-login-and-certificate-view",
+      "featureTitle": "Render generated static images (logo and certificate background) from frontend/public/assets/generated and use them in the UI (app header/login and certificate view).",
+      "files": [
+        "frontend/src/components/Brand/Logo.tsx",
+        "frontend/src/components/layout/AppLayout.tsx",
+        "frontend/src/features/auth/components/LoginPanel.tsx",
+        "frontend/src/features/learner/pages/CertificateDetailPage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-10"
+      ],
+      "confidence": "high"
+    }
+  ]
+}
