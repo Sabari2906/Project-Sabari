@@ -1,0 +1,148 @@
+{
+  "kind": "spec_vs_diff_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-11T08:31:06.461Z",
+  "summary": "The diff adds an initial Motoko canister with user profiles, basic course/module structures, certificates, and audit log scaffolding, plus a React Router-based frontend with Internet Identity login, profile setup, admin route guards, basic course admin pages, audit log page, and certificate UI. However, many core requirements (publishing/approval enforcement, learner training delivery with PDF viewer and progress, MCQ assessment engine, full certificate flows, comprehensive audit logging fields/filtering, and architecture/docs/assets) are missing or only stubbed.",
+  "missing_requirements": [
+    {
+      "id": "REQ-1",
+      "requirement": "Role assignment/change restricted to Admin users (or first-run bootstrap admin) and persisted in backend; enforce Therapist/Doctor vs Admin capabilities.",
+      "reason": "Frontend profile setup lets any authenticated user choose any role including \"Clinical Trainer\"; admin role management page explicitly says backend methods are missing; backend snippet shows profile save without admin restriction on role values and no first-run bootstrap admin shown.",
+      "evidence": [
+        "frontend/src/features/auth/components/ProfileSetupModal.tsx",
+        "frontend/src/features/admin/pages/AdminRoleManagementPage.tsx",
+        "backend/main.mo"
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "requirement": "Admin content workflow with course/module statuses (Draft, In Review, Published, Archived) where only Published is visible to learners; drafts not accessible; PDF upload/attach with backend enforcement of allowed types.",
+      "reason": "UI shows status selection, but learner catalog uses a query named useGetPublishedCourses while admin pages also use useGetPublishedCourses, suggesting no clear separation; backend snippet does not show publish/update-status methods or visibility filtering; backend enforcement for PDF-only uploads is not evidenced (only frontend checks file.type).",
+      "evidence": [
+        "frontend/src/features/learner/pages/CourseCatalogPage.tsx",
+        "frontend/src/features/admin/pages/AdminCoursesPage.tsx",
+        "frontend/src/features/admin/pages/AdminCourseDetailPage.tsx",
+        "frontend/src/features/admin/components/PdfUploadField.tsx",
+        "backend/main.mo"
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "requirement": "Learner-facing training delivery UI: course detail page with module list, in-app PDF viewer, and per-user progress tracking persisted and isolated.",
+      "reason": "Only a CourseCatalogPage is shown for learners; no learner course detail/module viewer pages are included; no progress tracking UI or backend storage for per-user progress is evidenced.",
+      "evidence": [
+        "frontend/src/features/learner/pages/CourseCatalogPage.tsx",
+        "backend/main.mo"
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "requirement": "MCQ-only assessment engine (exam CRUD + publish, attempts start/submit/get, backend objective scoring, stored attempt details, no free text/manual grading).",
+      "reason": "Backend defines a Question type but no exam/attempt types or canister methods for exam CRUD, publishing, attempt lifecycle, or scoring are shown; no frontend exam UI/routes exist in the diff.",
+      "evidence": [
+        "backend/main.mo",
+        "frontend/src/App.tsx"
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "requirement": "Certificate issuance only after passing a Published exam/course; certificate records stored immutably; learner certificates list + detail; admin certificates list with search/filter.",
+      "reason": "Backend shows a Certificate map type but no issuance logic tied to passed attempts is evidenced (and attempts/exams are missing); MyCertificatesPage and AdminCertificatesPage are placeholders and AdminCertificatesPage explicitly states additional backend methods are required; certificate detail displays a hardcoded learner name placeholder instead of retrieved learner identity/name.",
+      "evidence": [
+        "backend/main.mo",
+        "frontend/src/features/learner/pages/MyCertificatesPage.tsx",
+        "frontend/src/features/admin/pages/AdminCertificatesPage.tsx",
+        "frontend/src/features/learner/pages/CertificateDetailPage.tsx"
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "requirement": "Comprehensive append-only audit logging with required fields (timestamp, principal, role, action type, entity type/id, metadata) and admin viewer filtering by date range, user, action type, entity type; log key events (sign-in/out, publish, module views, exam start/submit/score, certificate issuance, admin changes).",
+      "reason": "Backend audit log type lacks role/entity type/entity id fields (only id/timestamp/action/performedBy/details are shown) and only some actions appear logged in snippet (e.g., SaveProfile, CreateCourse); admin audit UI only provides a text search box (no date range/action/entity filters).",
+      "evidence": [
+        "backend/main.mo",
+        "frontend/src/features/admin/pages/AdminAuditLogsPage.tsx"
+      ]
+    },
+    {
+      "id": "REQ-7",
+      "requirement": "All learner-facing training pages include an English disclaimer (training-only, no medical advice) and MCQ feedback limited to objective results.",
+      "reason": "Disclaimer component is present and used on CourseCatalogPage, but other learner-facing training pages (course detail/module viewer) are not present in the diff, so the requirement cannot be satisfied across all learner training pages; exam/MCQ feedback UI is not present.",
+      "evidence": [
+        "frontend/src/features/compliance/components/TrainingDisclaimer.tsx",
+        "frontend/src/features/learner/pages/CourseCatalogPage.tsx"
+      ]
+    },
+    {
+      "id": "REQ-8",
+      "requirement": "Deployment-ready project structure with documented canister methods for roles/content/exams/attempts/certificates/audit logs; typed frontend bindings + React Query integration for all operations; add concise architecture document.",
+      "reason": "No architecture document is included in the diff; backend method surface is incomplete in the snippet (missing many required methods: role management, publish flows, file download, exams/attempts, certificates list/get for admin/learner, audit logs list with filters); frontend shows some React Query hooks but not the complete required method coverage.",
+      "evidence": [
+        "backend/main.mo",
+        "frontend/src/features/auth/hooks/useCurrentUser.ts",
+        "frontend/src/App.tsx"
+      ]
+    },
+    {
+      "id": "REQ-10",
+      "requirement": "Generated static images exist under frontend/public/assets/generated with exact filenames; use logo in header/login and certificate background in certificate view.",
+      "reason": "UI references the required image paths, but the diff summary does not show the actual image files being added under frontend/public/assets/generated (files may be in the omitted list, but there is no evidence here).",
+      "evidence": [
+        "frontend/src/components/Brand/Logo.tsx",
+        "frontend/src/features/learner/pages/CertificateDetailPage.tsx"
+      ]
+    }
+  ],
+  "hallucinated_features": [
+    {
+      "description": "Users can self-assign the \"Clinical Trainer\" role during profile setup.",
+      "reason": "REQ-1 requires role assignment/change to be restricted to Admin (or bootstrap admin). Allowing self-selection of admin role is an unrequested capability and contradicts the authorization requirement.",
+      "evidence": [
+        "frontend/src/features/auth/components/ProfileSetupModal.tsx"
+      ]
+    },
+    {
+      "description": "Import of `SiCoffeescript` icon in AppLayout.",
+      "reason": "Not requested by any requirement and appears unrelated to the clinical training platform features.",
+      "evidence": [
+        "frontend/src/components/layout/AppLayout.tsx"
+      ]
+    }
+  ],
+  "confidence": 0.74,
+  "changed_files": [
+    "all_files_summary.json",
+    "backend/main.mo",
+    "frontend-file-summaries.txt",
+    "frontend/ARCHITECTURE.md",
+    "frontend/index.css",
+    "frontend/index.html",
+    "frontend/src/App.tsx",
+    "frontend/src/components/Brand/Logo.tsx",
+    "frontend/src/components/StatusBadge.tsx",
+    "frontend/src/components/layout/AppLayout.tsx",
+    "frontend/src/features/admin/components/PdfUploadField.tsx",
+    "frontend/src/features/admin/pages/AdminAuditLogsPage.tsx",
+    "frontend/src/features/admin/pages/AdminCertificatesPage.tsx",
+    "frontend/src/features/admin/pages/AdminCourseDetailPage.tsx",
+    "frontend/src/features/admin/pages/AdminCoursesPage.tsx",
+    "frontend/src/features/admin/pages/AdminRoleManagementPage.tsx",
+    "frontend/src/features/auth/components/LoginPanel.tsx",
+    "frontend/src/features/auth/components/ProfileSetupModal.tsx",
+    "frontend/src/features/auth/components/RequireAdmin.tsx",
+    "frontend/src/features/auth/components/RequireAuth.tsx",
+    "frontend/src/features/auth/hooks/useCurrentUser.ts",
+    "frontend/src/features/compliance/components/TrainingDisclaimer.tsx",
+    "frontend/src/features/learner/pages/CertificateDetailPage.tsx",
+    "frontend/src/features/learner/pages/CourseCatalogPage.tsx",
+    "frontend/src/features/learner/pages/MyCertificatesPage.tsx",
+    "frontend/src/hooks/useActor.ts",
+    "frontend/src/hooks/useInternetIdentity.ts",
+    "frontend/src/hooks/useQueries.ts",
+    "frontend/src/index.css",
+    "frontend/src/main.tsx",
+    "frontend/src/utils/urlParams.ts",
+    "frontend/tailwind.config.js",
+    "project_state.json"
+  ]
+}
