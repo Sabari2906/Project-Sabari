@@ -1,0 +1,384 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Clinical Training & MCQ Assessment Platform (Frontend plan)",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "summary": "Add Internet Identity sign-in, persisted user profile setup, and role-based route/UI guards for Therapist/Doctor (learners) and Clinical Trainer (admin).",
+      "acceptanceCriteria": [
+        "Users can sign in via Internet Identity and obtain an app session reflecting a persisted role.",
+        "Admin-only pages/actions are blocked for non-admin users (UI hides controls; backend rejects calls).",
+        "Therapist/Doctor users can access learner features but cannot create/approve/publish content or exams.",
+        "Role assignment/change is restricted to Admin users (or first-run bootstrap admin) and is persisted in the backend."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "create",
+          "description": "Create the main app shell that requires Internet Identity login before showing application data, wires top-level navigation, and mounts routing with role-aware protected sections (admin vs learner). Use the authorization component patterns for login state, profile setup gating, and logout cache clearing. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/features/auth/components/LoginPanel.tsx",
+          "operation": "create",
+          "description": "Create a login/logout UI that uses Internet Identity and shows authenticated user name (not principal), using the authorization component guidance for safe login/logout flow (including clearing React Query cache on logout). Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/features/auth/components/ProfileSetupModal.tsx",
+          "operation": "create",
+          "description": "Create first-login profile setup modal to collect English display name and persist it via backend profile save, following the authorization component guidance to avoid modal flash (actor dependency + query states). Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/features/auth/hooks/useCurrentUser.ts",
+          "operation": "create",
+          "description": "Add React Query hooks for current identity-derived user context: get caller role, get caller profile, and helper booleans (isAuthenticated/isAdmin/isLearner), using the authorization component guidance for role gating and error handling. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/features/auth/components/RequireAuth.tsx",
+          "operation": "create",
+          "description": "Create an auth guard wrapper that blocks unauthenticated access to all protected pages and shows a dedicated Access Denied / Login required screen (no app data shown). Use the authorization component guidance for guest handling. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/features/auth/components/RequireAdmin.tsx",
+          "operation": "create",
+          "description": "Create an admin-only guard wrapper that blocks non-admin users from admin routes and hides admin navigation links, using the authorization component guidance for access-denied UX and graceful handling of backend authorization errors. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/features/admin/pages/AdminRoleManagementPage.tsx",
+          "operation": "create",
+          "description": "Create an admin-only UI for assigning roles to principals (Therapist/Doctor mapped to learner role behavior; Clinical Trainer mapped to admin), calling the backend role assignment function and showing English validation/errors. Use authorization component guidance for admin-only actions. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/hooks/useActor.ts",
+          "operation": "modify",
+          "description": "Ensure actor lifecycle integrates cleanly with the auth/role hooks: keep anonymous actor for guests, and ensure downstream queries/mutations invalidate/refetch appropriately after login/logout to prevent stale authorization state."
+        }
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "summary": "Implement admin workflow UI for courses/modules and PDF uploads with status transitions and publish gating so learners only see Published content.",
+      "acceptanceCriteria": [
+        "Admin can create/edit courses and modules and attach uploaded PDF files to modules.",
+        "Non-admin users cannot upload or modify training materials.",
+        "Modules/courses marked Draft/In Review are not visible in the learner catalog.",
+        "Published content is visible to learners and accessible only through the app UI (no hidden draft URLs).",
+        "Only PDFs (and explicitly allowed supporting file types, if any) are accepted; rejected uploads show an English error message."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/features/admin/pages/AdminCoursesPage.tsx",
+          "operation": "create",
+          "description": "Create admin-only courses management page (create course, view course list for management, status badge, and status transition controls). Ensure UI is hidden/blocked for non-admin users via RequireAdmin. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/features/admin/pages/AdminCourseDetailPage.tsx",
+          "operation": "create",
+          "description": "Create admin-only course detail page with modules list and controls to add modules and attach a PDF to a module, including status handling and clear English errors. Use the blob-storage component for representing uploaded PDFs as ExternalBlob references. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/features/admin/components/PdfUploadField.tsx",
+          "operation": "create",
+          "description": "Create a PDF-only upload field that validates MIME/type and filename, rejects non-PDFs with an English error message, and shows upload progress. Use the blob-storage component (ExternalBlob.fromBytes + withUploadProgress) for upload representation. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/features/content/hooks/useCoursesAdmin.ts",
+          "operation": "create",
+          "description": "Add React Query mutations/queries for admin course/module operations (create course, add module with PDF blob, update status) with consistent loading/error states."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Wire admin content management routes into the router and navigation, guarded by RequireAdmin, and ensure there are no learner-accessible links to draft/in-review/archived content management views."
+        }
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "summary": "Build learner training UI: published course catalog, course detail, in-app PDF viewer, and per-user progress display.",
+      "acceptanceCriteria": [
+        "Learners can browse a catalog of Published courses and open course details.",
+        "Learners can open a module and view its PDF in-app.",
+        "User progress is saved per module and reflected in the UI after reload/sign-in.",
+        "Progress data is isolated per user and cannot be read/modified by other learners."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/features/learner/pages/CourseCatalogPage.tsx",
+          "operation": "create",
+          "description": "Create learner course catalog page that fetches and displays only Published courses, with clear loading/empty/error states in English and links to course detail."
+        },
+        {
+          "path": "frontend/src/features/learner/pages/CourseDetailPage.tsx",
+          "operation": "create",
+          "description": "Create learner course detail page that shows module list with status badges and progress state (e.g., Not Started/In Progress/Completed) and provides navigation to module viewer; ensure only published modules are navigable."
+        },
+        {
+          "path": "frontend/src/features/learner/pages/ModuleViewerPage.tsx",
+          "operation": "create",
+          "description": "Create learner module viewer page with an in-app PDF viewer powered by a secure blob reference URL. Use the blob-storage component (ExternalBlob.getDirectURL) to render PDFs via browser streaming/caching. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/features/content/hooks/useCoursesLearner.ts",
+          "operation": "create",
+          "description": "Add React Query hooks for learner content access (published courses, course details) and any progress-related calls made available by the backend, with consistent caching keys and error handling."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Wire learner training routes (catalog, course detail, module viewer) behind RequireAuth and ensure navigation is available to both learner roles while keeping admin sections separate."
+        }
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "summary": "Implement MCQ assessment UI: admin exam builder/publish flow and learner exam attempt UI with objective backend scoring and results display.",
+      "acceptanceCriteria": [
+        "Admin can create/edit exams, questions, and choices; each question has one correct option (or a clearly defined objective scoring rule if multi-select is supported).",
+        "Learners can start an exam attempt, answer questions, submit once, and receive an objective score computed by the backend.",
+        "The backend stores attempt details (timestamps, answers, score, pass/fail) and returns them to the UI.",
+        "No UI or API supports free-text answers or manual overrides of scoring."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/features/admin/pages/AdminExamsPage.tsx",
+          "operation": "create",
+          "description": "Create admin-only exams management page for listing and navigating to exam editor/publish controls; hide from non-admin via RequireAdmin."
+        },
+        {
+          "path": "frontend/src/features/admin/pages/AdminExamEditorPage.tsx",
+          "operation": "create",
+          "description": "Create admin-only MCQ exam editor UI limited to objective rules (no free-text fields). Include question/choice editing UX and publish gating (draft vs published) as supported by backend capabilities."
+        },
+        {
+          "path": "frontend/src/features/learner/pages/ExamStartPage.tsx",
+          "operation": "create",
+          "description": "Create learner exam start page for a selected course/exam, describing objective scoring and attempt rules (submit once), with clear English messaging."
+        },
+        {
+          "path": "frontend/src/features/learner/pages/ExamAttemptPage.tsx",
+          "operation": "create",
+          "description": "Create learner MCQ attempt UI (single-select choices per question), client-side validation to ensure all answers are selections, and submit flow that calls backend objective scoring; do not include any free-text inputs."
+        },
+        {
+          "path": "frontend/src/features/learner/pages/ExamResultPage.tsx",
+          "operation": "create",
+          "description": "Create learner result page that shows objective outcomes only (score, pass/fail, correct/incorrect if provided) and explicitly avoids medical guidance or recommendations in any feedback text."
+        },
+        {
+          "path": "frontend/src/features/exams/hooks/useExams.ts",
+          "operation": "create",
+          "description": "Add React Query hooks for exam attempt creation/submission and result retrieval using available backend functions, with robust handling of authorization failures and one-time submit UX."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Wire admin exam routes under RequireAdmin and learner exam routes under RequireAuth, and ensure learners cannot access admin exam builder/publish UIs via navigation."
+        }
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "summary": "Add certificate UI: learner certificates list/detail (printable) and admin certificate viewer with filtering/search UX.",
+      "acceptanceCriteria": [
+        "Certificate is issued only after a passed attempt (per configured threshold) for a Published exam/course.",
+        "Each certificate has a unique ID and is stored in the backend with immutable issuance fields (issue date, recipient, exam/course reference).",
+        "Learner can view their certificates list and open a certificate detail page suitable for printing/downloading.",
+        "Admin can view certificates issued and search/filter by learner/exam/course."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/features/learner/pages/MyCertificatesPage.tsx",
+          "operation": "create",
+          "description": "Create learner certificates list page (English UI) that shows issued certificates for the current user and links to a printable certificate detail view."
+        },
+        {
+          "path": "frontend/src/features/learner/pages/CertificateDetailPage.tsx",
+          "operation": "create",
+          "description": "Create printable certificate detail view that renders immutable issuance fields (learner name/identifier, course/exam name, issue date, unique certificate ID) and is suitable for print/download."
+        },
+        {
+          "path": "frontend/src/features/admin/pages/AdminCertificatesPage.tsx",
+          "operation": "create",
+          "description": "Create admin-only certificates viewer page with client-side search/filter UI (by learner/exam/course) and clear English empty/loading/error states; block non-admin via RequireAdmin."
+        },
+        {
+          "path": "frontend/src/features/certificates/hooks/useCertificates.ts",
+          "operation": "create",
+          "description": "Add React Query hooks for listing/getting certificates using available backend functions (and placeholders for any additional backend certificate list capabilities), with consistent caching and error handling."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Wire learner and admin certificate routes into navigation and routing, guarded appropriately (RequireAuth for learner, RequireAdmin for admin)."
+        }
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "summary": "Add admin-only audit log viewer UI with filtering and ensure key user actions trigger audit-relevant frontend calls (as supported by backend).",
+      "acceptanceCriteria": [
+        "Backend records audit events with: timestamp, principal/user ID, role, action type, entity type/id, and minimal relevant metadata.",
+        "Audit logs are append-only from the app perspective (no edit/delete UI).",
+        "Admin UI can filter logs by date range, user, action type, and entity type.",
+        "Key events are logged: sign-in/out, publish actions, module view events, exam attempt submit/score events, certificate issuance."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/features/admin/pages/AdminAuditLogsPage.tsx",
+          "operation": "create",
+          "description": "Create admin-only audit log viewer page that fetches audit logs and provides filter UI (date range, user, action type, entity type) client-side unless server-side filtering is available; include no edit/delete actions (append-only UX)."
+        },
+        {
+          "path": "frontend/src/features/audit/hooks/useAuditLogs.ts",
+          "operation": "create",
+          "description": "Add React Query hooks to fetch audit logs and map them into a table-friendly model, with consistent loading/error UI states and graceful handling of authorization failures."
+        },
+        {
+          "path": "frontend/src/features/learner/pages/ModuleViewerPage.tsx",
+          "operation": "modify",
+          "description": "Ensure module open/view actions trigger the appropriate backend call(s) that result in audit logging (as supported by backend), without leaking any draft module identifiers through learner navigation."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Wire the admin audit logs route into admin navigation and guard it with RequireAdmin."
+        }
+      ]
+    },
+    {
+      "id": "REQ-7",
+      "summary": "Add safety/compliance UX guardrails: training-only disclaimer on learner pages, no content generation UI, and objective-only exam feedback.",
+      "acceptanceCriteria": [
+        "All learner-facing training pages include a concise disclaimer in English (no medical advice; training-only).",
+        "There is no UI for generating content; all displayed training content is sourced from stored admin uploads and metadata.",
+        "MCQ feedback (if any) is limited to objective results (correct/incorrect/score) and does not provide medical guidance."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/features/compliance/components/TrainingDisclaimer.tsx",
+          "operation": "create",
+          "description": "Create a reusable English disclaimer component stating that the platform provides training materials only and does not provide medical advice; designed to appear consistently on learner-facing pages."
+        },
+        {
+          "path": "frontend/src/features/learner/pages/CourseCatalogPage.tsx",
+          "operation": "modify",
+          "description": "Add the TrainingDisclaimer component to the learner course catalog page and ensure learner-visible content is only rendered from backend-provided admin uploads/metadata (no generation UI)."
+        },
+        {
+          "path": "frontend/src/features/learner/pages/CourseDetailPage.tsx",
+          "operation": "modify",
+          "description": "Add the TrainingDisclaimer component and ensure only published content is linked/displayed (no hidden draft navigation)."
+        },
+        {
+          "path": "frontend/src/features/learner/pages/ModuleViewerPage.tsx",
+          "operation": "modify",
+          "description": "Add the TrainingDisclaimer component and ensure any module-related UI contains no medical recommendations; only renders the admin-uploaded PDF and objective metadata."
+        },
+        {
+          "path": "frontend/src/features/learner/pages/ExamResultPage.tsx",
+          "operation": "modify",
+          "description": "Restrict result copy to objective outcomes only (score/pass/fail/correctness) and explicitly avoid interpretive medical guidance."
+        }
+      ]
+    },
+    {
+      "id": "REQ-8",
+      "summary": "Organize frontend into feature modules with typed backend bindings and React Query hooks for all reads/writes; document the frontend architecture.",
+      "acceptanceCriteria": [
+        "Backend exposes a documented set of canister methods for: role management, course/module CRUD + publish, file upload/download, exam CRUD + publish, attempts create/submit/get, certificates list/get, and audit logs list.",
+        "Frontend uses React Query for server state (queries/mutations) and handles loading/error states consistently.",
+        "A concise architecture document is added to the repo describing: data model (in-canister persistent storage), method list (API flow), and folder structure for frontend/backend within the template constraints."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/api/backendClient.ts",
+          "operation": "create",
+          "description": "Create a small typed helper that wraps useActor and provides a stable place for backend calls used by React Query hooks (no low-level backend details; focus on typed invocation and shared error translation)."
+        },
+        {
+          "path": "frontend/src/api/queryKeys.ts",
+          "operation": "create",
+          "description": "Create centralized React Query key helpers for auth/profile, courses/modules, exams/attempts, certificates, and audit logs to ensure consistent caching and invalidation."
+        },
+        {
+          "path": "frontend/src/components/QueryState/QueryBoundary.tsx",
+          "operation": "create",
+          "description": "Create a shared query boundary component for consistent loading/error/empty handling across pages (English-only messages)."
+        },
+        {
+          "path": "frontend/src/backend.d.ts",
+          "operation": "modify",
+          "description": "Keep frontend typings aligned with backend interface changes as features expand (roles, content management, exams/attempts, certificates, audit logs), ensuring React Query hooks remain type-safe."
+        },
+        {
+          "path": "frontend/ARCHITECTURE.md",
+          "operation": "create",
+          "description": "Add a concise architecture document describing frontend folder structure, React Query usage conventions, and the set of backend capabilities the UI expects (method list at a high level), in English."
+        }
+      ]
+    },
+    {
+      "id": "REQ-9",
+      "summary": "Apply a professional medical training theme across the UI with accessible neutral/green accents and consistent status styling; avoid blue/purple as primary colors.",
+      "acceptanceCriteria": [
+        "App has a consistent theme (e.g., neutral + clinical accent colors) applied to navigation, cards, tables, forms, and status badges (Draft/Published/Passed/Failed).",
+        "UI uses accessible contrast and clear hierarchy suitable for professional clinical users.",
+        "No primary blue/purple theme is used unless later requested."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/index.css",
+          "operation": "create",
+          "description": "Create global styling entry with a neutral + clinical green accent theme, accessible contrast, typography/spacing defaults, and semantic status styles (Draft/In Review/Published/Archived and Passed/Failed) while avoiding blue/purple as primary colors."
+        },
+        {
+          "path": "frontend/src/components/layout/AppLayout.tsx",
+          "operation": "create",
+          "description": "Create a consistent app layout component (header/sidebar/content) applying the theme to navigation and page scaffolding using existing composed components (do not modify immutable UI library files)."
+        },
+        {
+          "path": "frontend/src/components/StatusBadge.tsx",
+          "operation": "create",
+          "description": "Create a reusable status badge component for course/module/exam and attempt statuses that uses the global theme tokens and enforces consistent labeling in English."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Adopt AppLayout and StatusBadge across the routed pages so the visual theme is applied consistently."
+        }
+      ]
+    },
+    {
+      "id": "REQ-10",
+      "summary": "Use generated static logo and certificate background assets in header/login and printable certificate views.",
+      "acceptanceCriteria": [
+        "Generated images are present under frontend/public/assets/generated with the exact filenames specified.",
+        "App header/login uses the generated logo asset.",
+        "Certificate view uses the generated certificate background asset and remains printable/readable."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/Brand/Logo.tsx",
+          "operation": "create",
+          "description": "Create a logo component that renders the generated logo asset at frontend/public/assets/generated/app-logo.dim_512x512.png in the app header and login panel."
+        },
+        {
+          "path": "frontend/src/components/layout/AppLayout.tsx",
+          "operation": "modify",
+          "description": "Integrate the Logo component into the header/navigation so branding is visible post-login."
+        },
+        {
+          "path": "frontend/src/features/auth/components/LoginPanel.tsx",
+          "operation": "modify",
+          "description": "Show the generated logo asset (via the shared Logo component) on the login screen to satisfy branding requirements."
+        },
+        {
+          "path": "frontend/src/features/learner/pages/CertificateDetailPage.tsx",
+          "operation": "modify",
+          "description": "Render the generated certificate background asset at frontend/public/assets/generated/certificate-bg.dim_2480x3508.png in the printable certificate view, ensuring text remains readable and print-friendly."
+        }
+      ]
+    }
+  ]
+}
